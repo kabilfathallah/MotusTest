@@ -45,12 +45,12 @@ class WelcomeViewModelTest {
 
     @Test
     fun testSuccess() = runTest {
-        val words = kotlin.Result.success(listOf("Hello", "World"))
+        val words =listOf("Hello", "World")
         val flow = flow {
             emit(Result.Loading)
             emit(Result.Success(words))
         }
-        `when`(getWordsUseCase()).thenReturn(words)
+        `when`(getWordsUseCase()).thenReturn(flow)
 
         viewModel = WelcomeViewModel(getWordsUseCase)
         viewModel.uiState.test {
@@ -66,7 +66,7 @@ class WelcomeViewModelTest {
 
         val exception = Exception("Test exception")
         val flow = flowOf(Result.Error(exception))
-        `when`(getWordsUseCase()).thenAnswer { throw exception }
+        `when`(getWordsUseCase()).thenReturn(flow)
 
         viewModel = WelcomeViewModel(getWordsUseCase)
 
