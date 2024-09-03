@@ -3,7 +3,6 @@ package com.kabil.feature.game
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kabil.core.domain.usecase.GetRandomWordUseCase
-import com.kabil.core.domain.usecase.GetRandomWordUseCaseImpl
 import com.kabil.core.ui.LetterFeedback
 import com.kabil.core.ui.LetterStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,7 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,9 +22,8 @@ const val MAX_ATTEMPTS = 7
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
-    val getRandomWordUseCase: GetRandomWordUseCaseImpl
+    val getRandomWordUseCase: GetRandomWordUseCase
 ) : ViewModel() {
-
 
     private val _uiState = MutableStateFlow<GameUiState>(GameUiState.Loading)
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
@@ -34,15 +34,18 @@ class GameViewModel @Inject constructor(
     init {
 
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                mysteryWord = getRandomWordUseCase()
+            _uiState.update {
+                GameUiState.Loading
+            }
+            getRandomWordUseCase().collectLatest {
+                mysteryWord = it
+                _uiState.update {
+                    GameUiState.Active(
+                        wordToGuess = mysteryWord
+                    )
+                }
             }
 
-            _uiState.update {
-                GameUiState.Active(
-                    wordToGuess = mysteryWord
-                )
-            }
         }
 
 
@@ -90,7 +93,7 @@ class GameViewModel @Inject constructor(
         _uiState.update { GameUiState.Loading }
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                mysteryWord = getRandomWordUseCase()
+                mysteryWord = getRandomWordUseCase().first()
             }
             guesses.clear()
             _uiState.update {

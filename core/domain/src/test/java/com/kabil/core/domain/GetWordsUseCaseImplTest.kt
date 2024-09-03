@@ -5,8 +5,6 @@ import com.kabil.core.common.Result
 import com.kabil.core.domain.repository.WordsRepository
 import com.kabil.core.domain.usecase.GetWordsUseCaseImpl
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -28,12 +26,12 @@ class GetWordsUseCaseImplTest {
 
     @Test
     fun testSuccess() = runTest {
-        val listOfWords = flowOf(listOf("HELLO", "WORLD"))
-        Mockito.`when`(wordsRepository.getWords()).doReturn(listOfWords)
+        val listOfWords = listOf("HELLO", "WORLD")
+        Mockito.`when`(wordsRepository.getWords()).doReturn(kotlin.Result.success(listOfWords))
 
         getWordsUseCase.invoke().test {
             assertEquals(Result.Loading, awaitItem())
-            assertEquals(Result.Success(listOfWords.first()), awaitItem())
+            assertEquals(Result.Success(listOfWords), awaitItem())
             awaitComplete()
         }
 

@@ -5,6 +5,7 @@ import com.kabil.core.domain.usecase.GetRandomWordUseCaseImpl
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -38,13 +39,17 @@ class GameViewModelTest {
 
     @Test
     fun stateLoading() = runTest {
+        Mockito.`when`(getRandomWordUseCase()).doReturn(flowOf("HELLO"))
         viewModel = GameViewModel(getRandomWordUseCase)
-        assertEquals(GameUiState.Loading, viewModel.uiState.value)
+        viewModel.uiState.test {
+            assertEquals(GameUiState.Loading, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
     fun firstActive() = runTest {
-        Mockito.`when`(getRandomWordUseCase()).doReturn("HELLO")
+        Mockito.`when`(getRandomWordUseCase()).doReturn(flowOf("HELLO"))
         viewModel = GameViewModel(getRandomWordUseCase)
         viewModel.uiState.test {
             assertEquals(GameUiState.Loading, awaitItem())
@@ -59,7 +64,7 @@ class GameViewModelTest {
 
     @Test
     fun firstGoodGuessActive() = runTest {
-        Mockito.`when`(getRandomWordUseCase()).doReturn("HELLO")
+        Mockito.`when`(getRandomWordUseCase()).doReturn(flowOf("HELLO"))
         viewModel = GameViewModel(getRandomWordUseCase)
         viewModel.uiState.test {
             assertEquals(GameUiState.Loading, awaitItem())
@@ -80,7 +85,7 @@ class GameViewModelTest {
 
     @Test
     fun firstGoodGuessAndGoToNextWordActive() = runTest {
-        Mockito.`when`(getRandomWordUseCase()).doReturn("HELLO")
+        Mockito.`when`(getRandomWordUseCase()).doReturn(flowOf("HELLO"))
         viewModel = GameViewModel(getRandomWordUseCase)
         viewModel.uiState.test {
             // initial state Loading
@@ -101,7 +106,7 @@ class GameViewModelTest {
             )
 
             //we change the word
-            Mockito.`when`(getRandomWordUseCase()).doReturn("THERE")
+            Mockito.`when`(getRandomWordUseCase()).doReturn(flowOf("WORLD"))
             //going the next game
             viewModel.nextGame()
             viewModel.uiState.test {
@@ -112,7 +117,7 @@ class GameViewModelTest {
                 // we should have an empty list of guesses
                 assertEquals(
                     GameUiState.Active(
-                        wordToGuess = "THERE",
+                        wordToGuess = "WORLD",
                         guesses = emptyList(),
                     ), awaitItem()
                 )
@@ -124,7 +129,7 @@ class GameViewModelTest {
 
     @Test
     fun firstWrongGuess() = runTest {
-        Mockito.`when`(getRandomWordUseCase()).doReturn("HELLO")
+        Mockito.`when`(getRandomWordUseCase()).doReturn(flowOf("HELLO"))
         viewModel = GameViewModel(getRandomWordUseCase)
         viewModel.uiState.test {
             assertEquals(GameUiState.Loading, awaitItem())
@@ -146,7 +151,7 @@ class GameViewModelTest {
 
     @Test
     fun testGameOver() = runTest {
-        Mockito.`when`(getRandomWordUseCase()).doReturn("HELLO")
+        Mockito.`when`(getRandomWordUseCase()).doReturn(flowOf("HELLO"))
         viewModel = GameViewModel(getRandomWordUseCase)
         viewModel.uiState.test {
             assertEquals(GameUiState.Loading, awaitItem())
