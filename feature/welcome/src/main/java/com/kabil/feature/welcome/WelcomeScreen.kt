@@ -27,13 +27,15 @@ internal fun WelcomeRoute(
     modifier: Modifier = Modifier,
     viewModel: WelcomeViewModel = hiltViewModel(),
     startGameClick: () -> Unit,
-    backOnHome: () -> Unit
+    backOnHome: () -> Unit,
+    listClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     WelcomeScreen(
         modifier = modifier,
         uiState = uiState,
-        startGameClick = startGameClick
+        startGameClick = startGameClick,
+        listClick = listClick
     )
     BackHandler {
         backOnHome.invoke()
@@ -44,7 +46,8 @@ internal fun WelcomeRoute(
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
     uiState: WelcomeUiState,
-    startGameClick: () -> Unit
+    startGameClick: () -> Unit,
+    listClick: () -> Unit
 ) {
 
     Column(
@@ -71,6 +74,15 @@ fun WelcomeScreen(
                     Text(text = stringResource(id = R.string.welcome_start))
 
                 }
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 20.dp),
+                    onClick = { listClick.invoke() }) {
+                    Text(text = stringResource(id = R.string.welcome_words))
+
+                }
             }
 
             is WelcomeUiState.Error -> {
@@ -92,7 +104,8 @@ fun WelcomeScreen(
 @Composable
 private fun WelcomeScreenLoadingPreview() {
     WelcomeScreen(
-        uiState = WelcomeUiState.Loading
+        uiState = WelcomeUiState.Loading,
+        startGameClick = {}
     ) {
 
     }
@@ -102,7 +115,8 @@ private fun WelcomeScreenLoadingPreview() {
 @Composable
 private fun WelcomeScreenErrorPreview() {
     WelcomeScreen(
-        uiState = WelcomeUiState.Error(Throwable("Error"))
+        uiState = WelcomeUiState.Error(Throwable("Error")),
+        startGameClick = {}
     ) {
 
     }
@@ -112,7 +126,8 @@ private fun WelcomeScreenErrorPreview() {
 @Composable
 private fun WelcomeScreenSuccessPreview() {
     WelcomeScreen(
-        uiState = WelcomeUiState.Success
+        uiState = WelcomeUiState.Success,
+        startGameClick = {},
     ) {
 
     }

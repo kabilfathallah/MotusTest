@@ -5,6 +5,8 @@ import com.kabil.core.database.model.WordEntity
 import com.kabil.core.network.datasource.RemoteDataSource
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -57,7 +59,7 @@ class WordsRepositoryImplTest {
             never()
         ).getWords()
         assertEquals(
-            listOf("HELLO", "WORLD"),
+            Result.success(listOf("HELLO", "WORLD")),
             result
         )
     }
@@ -69,6 +71,6 @@ class WordsRepositoryImplTest {
 
         val result = repository.getRandomWord()
 
-        assertEquals("HELLO", result)
+        assertEquals("HELLO", result.first())
     }
 }

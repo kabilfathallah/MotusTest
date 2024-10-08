@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="welcome_start">Démarrer</string>
+    <string name="welcome_words">Indices</string>
     <string name="no_internet_error">Pas de connection internet</string>
     <string name="generic_error">Pas de connection internet</string>
 </resources>

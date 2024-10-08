@@ -45,7 +45,7 @@ class WelcomeViewModelTest {
 
     @Test
     fun testSuccess() = runTest {
-        val words = listOf("Hello", "World")
+        val words =listOf("Hello", "World")
         val flow = flow {
             emit(Result.Loading)
             emit(Result.Success(words))
@@ -72,7 +72,6 @@ class WelcomeViewModelTest {
 
         viewModel.uiState.test {
             assertEquals(WelcomeUiState.Loading, awaitItem())
-            advanceUntilIdle()
             assertEquals(WelcomeUiState.Error(exception), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }

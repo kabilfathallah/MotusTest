@@ -14,11 +14,11 @@ import dagger.hilt.components.SingletonComponent
 interface UseCaseModule {
 
 
-    //@Binds
-    //fun bindsGetRandomWordUseCase(useCaseImpl: GetRandomWordUseCaseImpl): GetRandomWordUseCase
+    @Binds
+    fun bindsGetRandomWordUseCase(useCaseImpl: GetRandomWordUseCaseImpl): GetRandomWordUseCase
 
 
-    //@Binds
-    //fun bindsGetWordsUseCase(useCaseImpl: GetWordsUseCaseImpl): GetWordsUseCase
+    @Binds
+    fun bindsGetWordsUseCase(useCaseImpl: GetWordsUseCaseImpl): GetWordsUseCase
 
 }

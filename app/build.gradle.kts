@@ -58,6 +58,7 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.feature.welcome)
     implementation(projects.feature.game)
+    implementation(projects.feature.list)
 
     implementation(projects.core.domain)
     implementation(projects.core.data)
