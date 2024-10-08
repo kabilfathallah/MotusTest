@@ -12,13 +12,15 @@ fun NavController.navigateToWelcome() = navigate(WelcomeNavigation)
 
 fun NavGraphBuilder.welcomeScreen(
     onClick: () -> Unit,
-    backOnHome: () -> Unit
+    backOnHome: () -> Unit,
+    listClick: () -> Unit
 ) {
 
     composable<WelcomeNavigation> {
         WelcomeRoute(
             startGameClick = onClick,
-            backOnHome = backOnHome
+            backOnHome = backOnHome,
+            listClick = listClick
         )
     }
 }

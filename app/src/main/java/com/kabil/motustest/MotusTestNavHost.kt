@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.kabil.feature.game.gameScreen
 import com.kabil.feature.game.navigateToGame
+import com.kabil.feature.list.listScreen
+import com.kabil.feature.list.navigateToList
 import com.kabil.feature.welcome.WelcomeNavigation
 import com.kabil.feature.welcome.welcomeScreen
 
@@ -22,12 +24,18 @@ fun MotusTestNavHost(
     ) {
         welcomeScreen(
             onClick = { navController.navigateToGame() },
-            backOnHome = backOnHome
+            backOnHome = backOnHome,
+            listClick = { navController.navigateToList() }
         )
 
         gameScreen {
             navController.navigateUp()
         }
+
+        listScreen {
+            navController.navigateUp()
+        }
+
 
     }
 

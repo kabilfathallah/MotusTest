@@ -7,4 +7,6 @@ plugins {
     alias(libs.plugins.androidKsp) apply false
     alias(libs.plugins.hilt) apply  false
     alias(libs.plugins.kotlinSerialization) apply false
+    alias(libs.plugins.module.graph) apply true // Plugin applied to allow module graph generation
+
 }
